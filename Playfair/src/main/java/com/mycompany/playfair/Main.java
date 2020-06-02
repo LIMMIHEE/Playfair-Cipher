@@ -9,6 +9,9 @@ import java.awt.Point;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
+import com.mycompany.playfair.Result_Frame;
+
+
 /**
  *
  * @author 임미희
