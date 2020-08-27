@@ -9,6 +9,9 @@ import java.awt.Point;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
+import com.mycompany.playfair.Result_Frame;
+
+
 /**
  *
  * @author 임미희
@@ -16,7 +19,7 @@ import javax.swing.JOptionPane;
 public class Main extends javax.swing.JFrame {
         private static char[][] Table = new char[5][5];
 	private static Point[] alphabet =new Point[26];
-	
+
 	private static String Encryption_end ="";
 	private static String Decode_end ="";
 	private static String Conversion_Line = "";
@@ -25,7 +28,7 @@ public class Main extends javax.swing.JFrame {
         private static String KeyWord;
 	private static String Line ;
         
-        private static boolean isMove =false;
+
     
     /**
      * Creates new form Main
@@ -51,7 +54,6 @@ public class Main extends javax.swing.JFrame {
         jTextField3 = new javax.swing.JTextField();
         Encryption = new javax.swing.JButton();
         decode = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -85,8 +87,6 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("암호화 이후 사용가능");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -107,9 +107,6 @@ public class Main extends javax.swing.JFrame {
                         .addContainerGap(68, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jLabel1))
                             .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(Encryption, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -132,9 +129,7 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(Code)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Encryption, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(decode, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -154,14 +149,11 @@ public class Main extends javax.swing.JFrame {
 
     private void decodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decodeActionPerformed
         // TODO add your handling code here:
-        if(isMove==true){
+    
             Decrypt();
+            jTextField3.setText(Decode_end);
             Result_Frame s = new Result_Frame(Decode_end);
-        }else{
-            JOptionPane.showConfirmDialog(this, "암호화 이후 버튼을 누르세요","복호화 시도",JOptionPane.ERROR_MESSAGE);    
-        }
-        
-        isMove=false;
+            
         
     }//GEN-LAST:event_decodeActionPerformed
 
@@ -204,32 +196,39 @@ public class Main extends javax.swing.JFrame {
         });
     }
 
-    private static void encryption() {
+   private static void encryption() {
 
-		 KeyWord = jTextField1.getText();
-		 Line = jTextField3.getText();
+		System.out.print("암호화에 사용할 키 : ");
+		String KeyWord = jTextField1.getText();
+		System.out.print("암호화 진행 할 문자열  : ");
+		String Line = jTextField3.getText();
 //		System.out.println(Line);
 		
 		String result = Deduplication(KeyWord);
 //		System.out.println(result);
-		string_theorem(Line);
+		string_theorem(Line.toUpperCase());
 		
 		Table(result);
 		Encryption_end = Encryption_run(Conversion_Line.toUpperCase(),1);
+		
 		System.out.println(Encryption_end);
-                isMove=true;
+                Encryption_end = Encryption_end;
 	}
 	
 	private static void Decrypt() {
-                KeyWord = jTextField1.getText();
-                
-                String result = Deduplication(KeyWord);
-                Table(result);
-                
-		Decode_end = jTextField2.getText();
-                System.out.println(Decode_end);
-		Decode_end = Encryption_run((Decode_end.replace(" ", "")).toUpperCase(),4).replace(" ", "");
-		System.out.println(Decode_end.replace(" ", ""));
+		Scanner scan = new Scanner(System.in);
+		
+		String KeyWord = jTextField1.getText();
+		String Decode_end = jTextField2.getText();
+		
+         
+            String result = Deduplication(KeyWord);
+            Table(result);
+
+            System.out.println(Decode_end);
+            Decode_end = Encryption_run((Decode_end.replace(" ", "")).toUpperCase(),4);
+            EncodeX_Del(Decode_end.replace(" ", ""));
+
 	}
 	
 	
@@ -263,17 +262,21 @@ public class Main extends javax.swing.JFrame {
 		System.out.println(Key);
 		for(int i=0; i < len; i+=2) {
 			Num= Key.substring(i, i+2);
-//			System.out.println(Num);
+			System.out.println(Num);
+                        if(Num=="QZ" || Num=="ZQ"){
+                            Num=Character.toString(Num.charAt(1)+Num.charAt(0));
+                        }
 			if(Num.charAt(0)==Num.charAt(1)) {
 				Num = Num.valueOf(Num.charAt(0))+'X';
 				i -= 1;
 				len +=1;
 				Temporary="";
 			}
-			
+//			System.out.println(Num);
 			result+= Num;
 		}
 		Conversion_Line = result+Temporary;
+		System.out.println(Conversion_Line);
 		
 	}
 	
@@ -284,6 +287,7 @@ public class Main extends javax.swing.JFrame {
 	
 	
 	private static void Table(String Key ) {
+        
 		boolean change = (Key.toLowerCase()).contains("z");
 		if(change!=true) {
 			equalsText="Z";
@@ -294,12 +298,12 @@ public class Main extends javax.swing.JFrame {
 		String s = JQ_replace(Key + "ABCDEFGHIJKLMNOPQRSTUVWXYZ", change);
 		int len = s.length();
         for (int i = 0, k = 0; i < len; i++) {
-            char c = s.charAt(i);
+            char n = s.charAt(i);
 //            System.out.println(c + "  "+ (c - 'A'));
-            if (alphabet[c - 'A'] == null) { 
-            	Table[k / 5][k % 5] = c; // 0 0 , 0 , 1
+            if (alphabet[n - 'A'] == null) { 
+            	Table[k / 5][k % 5] = n; // 0 0 , 0 , 1
             	// 나머지 이므로 뒤에는 계속 0부터  5까지 들어간다.
-            	alphabet[c - 'A'] = new Point(k % 5, k / 5);//0, 0 / 1,0
+            	alphabet[n - 'A'] = new Point(k % 5, k / 5);//0, 0 / 1,0
             	// 원래 알파벳 자리에 널어두기 ( 0부터 시작 하므로 -1이다. )
                 k++;
             }
@@ -315,20 +319,35 @@ public class Main extends javax.swing.JFrame {
 	
 	private static String Encryption_run(String result,int result_num) {
 		String text="";
-		
-		char one;
-		char two;
+   
+                System.out.println(result.length());
 		for(int i=0; i< result.length(); i+=2) {
-			one = result.charAt(i);
-			two = result.charAt(i+1);
+			char one = result.charAt(i);
+                        System.out.println(i);
+			char two = result.charAt(i+1);
 			
-//			System.out.println(one);
-//			System.out.println(two);
-			int r_1 = alphabet[one-'A'].y; // 전에 넣어둔 Y 자리 찾기
-			int r_2 = alphabet[two-'A'].y;
-			
-			int c_1 =  alphabet[one-'A'].x; // 전에 넣어둔 X 자리 찾기
-			int c_2 =  alphabet[two-'A'].x; 
+			int r_1=0;
+			int r_2=0;
+			int c_1=0;
+			int c_2=0;
+			if(one=='Q') {
+				r_1 = alphabet['Z'-'A'].y; // 전에 넣어둔 Y 자리 찾기
+				r_2 = alphabet[two-'A'].y;
+				c_1 = alphabet['Z'-'A'].x; // 전에 넣어둔 Y 자리 찾기
+				c_2 = alphabet[two-'A'].x;
+			}else if( two=='Q'){
+				r_1 = alphabet[one-'A'].y; // 전에 넣어둔 Y 자리 찾기
+				r_2 = alphabet['Z'-'A'].y;
+				c_1 = alphabet[one-'A'].x; // 전에 넣어둔 Y 자리 찾기
+				c_2 = alphabet['Z'-'A'].x;
+			}
+			else {
+				 r_1 = alphabet[one-'A'].y; // 전에 넣어둔 Y 자리 찾기
+				 r_2 = alphabet[two-'A'].y;
+				 
+				 c_1 =  alphabet[one-'A'].x; // 전에 넣어둔 X 자리 찾기
+				 c_2 =  alphabet[two-'A'].x; 
+			}
 			
 			if(r_1 == r_2) { // 줄이 같으면
 				c_1 = (c_1+result_num)%5;
@@ -343,16 +362,40 @@ public class Main extends javax.swing.JFrame {
 			}
 			text +=Table[r_1][c_1];
 			text +=Table[r_2][c_2]+" ";
+			System.out.println(text);
 
 		}
 		return text;
 	}
-        public String getDecrypt(){
-            return Decode_end;
-        }
-        public String getencryption(){
-            return Decode_end;
-        }
+	
+	private static void EncodeX_Del(String Key) {
+		String Num="";
+		String result="";
+		for(int i=0; i< Key.length(); i+=3) {
+			if(i+3 <= Key.length()) {
+				Num= Key.substring(i, i+3);
+				System.out.println(Num);
+				if(Num.charAt(0)==Num.charAt(2) && Num.charAt(1)=='X') {
+					String test = Character.toString(Num.charAt(0))+Character.toString(Num.charAt(2));
+					System.out.println(test);
+					result += test;
+				}else {
+					result += Num;	
+				}
+			}else {
+				Num= Key.substring(i, Key.length());
+				result += Num;	
+			}
+			
+		}
+		if(result.charAt(result.length()-1)=='X') {
+			System.out.println(result.charAt(result.length()-1));
+			result = result.substring(0,result.length()-1);
+		}
+		System.out.println(result);
+                Decode_end = result;
+		
+	}
     
     
     
@@ -363,7 +406,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel Key;
     private javax.swing.JLabel Plain;
     private javax.swing.JButton decode;
-    private javax.swing.JLabel jLabel1;
     private static javax.swing.JTextField jTextField1;
     private static javax.swing.JTextField jTextField2;
     private static javax.swing.JTextField jTextField3;
